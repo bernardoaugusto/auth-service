@@ -33,6 +33,9 @@
     },
     "pre-push": {
         "silent": true,
-        "run": []
+        "run": [
+            "build",
+            "test"
+        ]
     }
 }
