@@ -5,7 +5,10 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc",
-        "test": "jest"
+        "test": "jest --passWithNoTests --silent --runInBand",
+        "test:verbose": "jest --passWithNoTests --runInBand",
+        "test:unit": "npm test -- --watch",
+        "test:ci": "npm test -- --coverage"
     },
     "keywords": [],
     "author": "",
@@ -33,7 +36,7 @@
         "silent": true,
         "run": [
             "build",
-            "test"
+            "test:ci"
         ]
     }
 }
