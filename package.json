@@ -8,8 +8,7 @@
         "test": "jest --passWithNoTests --silent --runInBand",
         "test:verbose": "jest --passWithNoTests --runInBand",
         "test:unit": "npm test -- --watch",
-        "test:ci": "npm test -- --coverage",
-        "test:jest": "jest"
+        "test:ci": "npm test -- --coverage"
     },
     "keywords": [],
     "author": "",
