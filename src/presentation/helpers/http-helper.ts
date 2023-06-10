@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ServerError } from "../errors/server-error";
+import { ServerError } from "../errors";
 import { HttpResponse } from "../protocols/http";
 
 export const badRequest = (error: Error): HttpResponse => ({
