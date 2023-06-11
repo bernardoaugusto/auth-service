@@ -11,6 +11,7 @@ services:
             - '3000:3000'
         volumes:
             - .:/usr/app
+            - /usr/src/app/node_modules
         environment:
             NODE_ENV: dev
             PORT: 3000

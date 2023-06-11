@@ -1,29 +1,19 @@
-# BUILDER STAGE
-FROM node:lts-alpine as builder
+FROM node:10.16.0
+RUN npm install -g --unsafe-perm prisma2@2.0.0-preview-12
 
-WORKDIR /usr/app
+RUN mkdir /app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json /app
+COPY prisma /app/prisma/
+COPY src /app/src
+
+ARG MYSQL_URL
+ENV MYSQL_URL "$MYSQL_URL"
 
 RUN npm install
+RUN npm audit fix --force
 
-COPY . .
+RUN prisma2 generate
 
-RUN npm run build
-
-
-# RUNTIME STAGE
-FROM node:lts-alpine as runtime
-
-WORKDIR /usr/app
-
-RUN npm i -g @nestjs/cli
-ENV NODE_ENV=production
-
-COPY --from=builder "/usr/app/dist/" "/usr/app/dist/"
-COPY --from=builder "/usr/app/node_modules/" "/usr/app/node_modules/"
-COPY --from=builder "/usr/app/package.json" "/usr/app/package.json"
-
-RUN npm prune --production
-
-CMD ["npm", "run", "start"]
+CMD ["npm", "start" ]
