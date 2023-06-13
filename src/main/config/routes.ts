@@ -1,11 +1,13 @@
 import { Express, Router } from "express";
 import fg from "fast-glob";
+import env from "./env";
 
 export default (app: Express): void => {
+    const extention = env.nodeEnv === "development" ? "ts" : "js";
     const router = Router();
     app.use("/api", router);
 
-    fg.sync("**/src/main/routes/**routes.ts").forEach(async (file) =>
+    fg.sync(`**/main/routes/**routes.${extention}`).forEach(async (file) =>
         (await import(`../../../${file}`)).default(router)
     );
 };

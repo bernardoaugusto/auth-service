@@ -1,31 +1,32 @@
-# BUILDER STAGE
-FROM node:17.9.0 as builder
-RUN npm install -g --unsafe-perm prisma2@2.0.0-preview-12
 
-WORKDIR /usr/app
-
+# STAGE 1
+FROM node:18-alpine as builder
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+WORKDIR /home/node/app
 COPY package*.json ./
-
 RUN npm install
-RUN npm rebuild bcrypt --build-from-source
-
-COPY . .
-
+COPY --chown=node:node . .
 RUN npm run build
 
+# STAGE 2
+FROM node:82-alpine
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+WORKDIR /home/node/app
+COPY package*.json ./
+USER node
+# RUN npm install --save-dev sequelize-cli
+RUN npm install --production
+COPY --from=builder /home/node/app/build ./build
 
-# RUNTIME STAGE
-FROM node:17.9.0 as runtime
+COPY --chown=node:node .env .
+# COPY --chown=node:node .sequelizerc .
+COPY --chown=node:node  /config ./config
+COPY --chown=node:node  /public ./public
 
-WORKDIR /usr/app
 
-RUN npm i -g @nestjs/cli
-ENV NODE_ENV=production
+# RUN npm run migrate
+# RUN npx sequelize db:seed:all; exit 0
+# RUN npm un sequelize-cli
 
-COPY --from=builder "/usr/app/dist/" "/usr/app/dist/"
-COPY --from=builder "/usr/app/node_modules/" "/usr/app/node_modules/"
-COPY --from=builder "/usr/app/package.json" "/usr/app/package.json"
-
-RUN npm prune --production
-
+EXPOSE 3000
 CMD ["npm", "run", "start:prod"]
