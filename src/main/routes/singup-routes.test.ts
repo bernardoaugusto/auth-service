@@ -2,7 +2,6 @@
 import request from "supertest";
 import app from "../config/app";
 import { MongoHelper } from "../../infra/db/mongodb/helpers/mongo-helper";
-
 describe("SingUp Routes", () => {
     beforeAll(async () => {
         await MongoHelper.connect(process.env.MONGO_URL as string);
@@ -17,14 +16,18 @@ describe("SingUp Routes", () => {
         await accountCollection.deleteMany({});
     });
     test("Should return an account on success", async () => {
-        await request(app)
-            .post("/api/signup")
-            .send({
-                name: "Bernardo",
-                email: "bernardo@mail.com",
-                password: "12345678",
-                passwordConfirmation: "12345678",
-            })
-            .expect(200);
+        const response = await request(app).post("/api/signup").send({
+            name: "Bernardo",
+            email: "bernardo@mail.com",
+            password: "12345678",
+            passwordConfirmation: "12345678",
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toBeTruthy();
+        expect(response.body.id).toBeTruthy();
+        expect(response.body.name).toBe("Bernardo");
+        expect(response.body.email).toBe("bernardo@mail.com");
+        expect(response.body.password).toBeTruthy();
     });
 });

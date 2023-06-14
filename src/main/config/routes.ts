@@ -3,7 +3,7 @@ import fg from "fast-glob";
 import env from "./env";
 
 export default (app: Express): void => {
-    const extention = env.nodeEnv === "development" ? "ts" : "js";
+    const extention = env.nodeEnv === "production" ? "js" : "ts";
     const router = Router();
     app.use("/api", router);
 
