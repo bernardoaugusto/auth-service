@@ -1,20 +1,25 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Collection, MongoClient } from "mongodb";
 
 export const MongoHelper = {
     client: null as unknown as MongoClient,
+    uri: null as unknown as string,
 
     async connect(uri: string): Promise<void> {
+        this.uri = uri;
         this.client = await new MongoClient(uri).connect();
     },
 
     async disconnect(): Promise<void> {
-        await this.client.close();
+        if (this.client) {
+            await this.client.close();
+            this.client = null as unknown as MongoClient;
+        }
     },
 
-    getCollection(name: string): Collection {
+    async getCollection(name: string): Promise<Collection> {
+        if (!this.client) {
+            await this.connect(this.uri);
+        }
         return this.client.db().collection(name);
     },
 
