@@ -2,7 +2,8 @@ export default {
     roots: ["<rootDir>/src"],
     collectCoverageFrom: [
         "<rootDir>/src/**/*.ts",
-        "!<rootDir>/src/main/**",
+        "!<rootDir>/src/main/server.ts",
+        "!<rootDir>/src/main/config/**",
         "!<rootDir>/src/**/protocols/**",
         "!<rootDir>/src/**/models/**",
         "!<rootDir>/src/**/*-protocols.ts",
