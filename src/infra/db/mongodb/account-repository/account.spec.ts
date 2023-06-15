@@ -1,8 +1,5 @@
-import dotenv from "dotenv";
 import { MongoHelper } from "../helpers/mongo-helper";
 import { AccountMongoRepository } from "./account";
-
-dotenv.config();
 
 describe("Account Mongo Repository", () => {
     beforeAll(async () => {
