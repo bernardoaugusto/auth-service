@@ -4,6 +4,7 @@ export default {
         "<rootDir>/src/**/*.ts",
         "!<rootDir>/src/main/server.ts",
         "!<rootDir>/src/main/config/**",
+        "!<rootDir>/src/main/adapters/**",
         "!<rootDir>/src/**/protocols/**",
         "!<rootDir>/src/**/models/**",
         "!<rootDir>/src/**/*-protocols.ts",
