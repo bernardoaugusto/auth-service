@@ -9,6 +9,7 @@ export default {
         "!<rootDir>/src/**/models/**",
         "!<rootDir>/src/**/*-protocols.ts",
         "!<rootDir>/src/**/*-protocol.ts",
+        "!<rootDir>/src/domain/usecases/**",
     ],
     coverageDirectory: "coverage",
     coverageProvider: "v8",
