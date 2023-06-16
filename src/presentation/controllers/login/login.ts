@@ -7,6 +7,7 @@ import {
 } from "./login-protocols";
 import { InvalidParamError, MissingParamError } from "../../errors";
 import {
+    ok,
     badRequest,
     serverError,
     unauthorized,
@@ -48,7 +49,7 @@ export class LoginController implements Controller {
                 return unauthorized();
             }
 
-            return badRequest(new MissingParamError("email"));
+            return ok({ accessToken });
         } catch (error) {
             return serverError(error as Error);
         }
