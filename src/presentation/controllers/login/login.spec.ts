@@ -5,9 +5,7 @@ import {
     unauthorized,
 } from "../../helpers/http-helper";
 import { MissingParamError, InvalidParamError } from "../../errors";
-import { EmailValidator } from "../../protocols/email-validator";
-import { HttpRequest } from "../../protocols";
-import { Authentication } from "../../../domain/usecases/authentication";
+import { HttpRequest, EmailValidator, Authentication } from "./login-protocols";
 
 const makeFakeRequest = (): HttpRequest => ({
     body: { email: "any_email@mail.com", password: "any_password" },
