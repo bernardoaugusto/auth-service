@@ -3,6 +3,7 @@ import { AccountModel } from "../../../domain/models/account";
 import { LoadAccountByEmailRepository } from "../../protocols/db/load-account-by-email-repository";
 import { AuthenticationModel } from "../../../domain/usecases/authentication";
 import { HashComparer } from "../../protocols/criptography/hash-comparer";
+import { resolve } from "path";
 
 const makeFakeAccount = (): AccountModel => ({
     id: "any_id",
@@ -79,6 +80,16 @@ describe("DbAuthentication UseCase", () => {
         expect(promise).rejects.toThrow();
     });
 
+    it("Should return null if LoadAccountByEmailRepository returns null", async () => {
+        const { sut, loadAccountByEmailRepositoryStub } = makeSut();
+        jest.spyOn(
+            loadAccountByEmailRepositoryStub,
+            "load"
+        ).mockReturnValueOnce(null as any);
+        const accessToken = await sut.auth(makeFakeAuthentication());
+        expect(accessToken).toBeNull();
+    });
+
     it("Should call HashComparer with correct values", async () => {
         const { sut, hashComparerStub } = makeSut();
         const compareSpy = jest
@@ -102,5 +113,14 @@ describe("DbAuthentication UseCase", () => {
         const promise = sut.auth(makeFakeAuthentication());
 
         expect(promise).rejects.toThrow();
+    });
+
+    it("Should return null if HashComparer returns false", async () => {
+        const { sut, hashComparerStub } = makeSut();
+        jest.spyOn(hashComparerStub, "compare").mockReturnValueOnce(
+            new Promise((resolve) => resolve(false))
+        );
+        const accessToken = await sut.auth(makeFakeAuthentication());
+        expect(accessToken).toBeFalsy();
     });
 });
