@@ -44,7 +44,7 @@ const makeHashComparer = (): HashComparer => {
 
 const makeEncrypter = (): Encrypter => {
     class EncrypterStub implements Encrypter {
-        async generate(value: string): Promise<string> {
+        async encrypt(value: string): Promise<string> {
             return new Promise((resolve) => resolve("any_token"));
         }
     }
@@ -130,9 +130,7 @@ describe("DbAuthentication UseCase", () => {
 
     it("Should call HashComparer with correct values", async () => {
         const { sut, hashComparerStub } = makeSut();
-        const compareSpy = jest
-            .spyOn(hashComparerStub, "compare")
-            .mockReturnValueOnce(null as any);
+        const compareSpy = jest.spyOn(hashComparerStub, "compare");
 
         await sut.auth(makeFakeAuthentication());
 
@@ -164,9 +162,7 @@ describe("DbAuthentication UseCase", () => {
 
     it("Should call Encrypter with correct value", async () => {
         const { sut, encrypterStub } = makeSut();
-        const generateSpy = jest
-            .spyOn(encrypterStub, "generate")
-            .mockReturnValueOnce(null as any);
+        const generateSpy = jest.spyOn(encrypterStub, "encrypt");
 
         await sut.auth(makeFakeAuthentication());
 
@@ -175,7 +171,7 @@ describe("DbAuthentication UseCase", () => {
 
     it("Should throw Encrypter throws", async () => {
         const { sut, encrypterStub } = makeSut();
-        jest.spyOn(encrypterStub, "generate").mockReturnValueOnce(
+        jest.spyOn(encrypterStub, "encrypt").mockReturnValueOnce(
             new Promise((resolve, reject) => reject(new Error()))
         );
 
@@ -194,9 +190,7 @@ describe("DbAuthentication UseCase", () => {
 
     it("Should call UpdateAccessTokenRepository with correct values", async () => {
         const { sut, updateAccessTokenRepositoryStub } = makeSut();
-        const updateSpy = jest
-            .spyOn(updateAccessTokenRepositoryStub, "update")
-            .mockReturnValueOnce(null as any);
+        const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, "update");
 
         await sut.auth(makeFakeAuthentication());
 
