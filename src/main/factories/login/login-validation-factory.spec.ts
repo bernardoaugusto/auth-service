@@ -1,10 +1,9 @@
 import {
     ValidationComposite,
     RequiredFieldValidation,
-    CompareFieldsValidation,
     EmailValidation,
 } from "../../../presentation/helpers/validators";
-import { makeSingUpValidation } from "./singup-validation";
+import { makeLoginValidation } from "./login-validation-factory";
 import { Validation } from "../../../presentation/protocols/validation";
 import { EmailValidator } from "../../../presentation/protocols/email-validator";
 
@@ -22,21 +21,12 @@ const makeEmailValidator = (): EmailValidator => {
 
 describe("SingUpValidation Factory", () => {
     it("Should call ValidationComposite with all validations", () => {
-        makeSingUpValidation();
+        makeLoginValidation();
         const validations: Validation[] = [];
 
-        for (const field of [
-            "name",
-            "email",
-            "password",
-            "passwordConfirmation",
-        ]) {
+        for (const field of ["email", "password"]) {
             validations.push(new RequiredFieldValidation(field));
         }
-
-        validations.push(
-            new CompareFieldsValidation("password", "passwordConfirmation")
-        );
 
         validations.push(new EmailValidation("email", makeEmailValidator()));
 

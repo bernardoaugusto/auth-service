@@ -1,4 +1,4 @@
-import { LoginController } from "./login";
+import { LoginController } from "./login-controller";
 import {
     ok,
     badRequest,
@@ -11,7 +11,7 @@ import {
     Authentication,
     Validation,
     AuthenticationModel,
-} from "./login-protocols";
+} from "./login-controller-protocols";
 
 const makeFakeRequest = (): HttpRequest => ({
     body: { email: "any_email@mail.com", password: "any_password" },
