@@ -2,30 +2,33 @@ version: '3.7'
 
 services:
     app:
+        container_name: auth-service-container
         build:
             context: .
             dockerfile: Dockerfile
             target: builder
-        command: sh -c "npm run start:prod"
+        image: auth-service
+        restart: always
         ports:
             - '3000:3000'
         volumes:
-            - .:/usr/app
-            - /usr/src/app/node_modules
+            - ./dist:/usr/src/auth-service/dist
         environment:
             NODE_ENV: production
             PORT: 3000
-            MONGO_URL: mongodb://mongodb-myapp:27017/auth-service
-        container_name: auth-service-app
+            MONGO_URL: mongodb://mongodb:27017/auth-service
+        command: sh -c "npm run start:prod"
+        links:
+            - mongodb
         depends_on:
-            - mongodb-myapp
-    mongodb-myapp:
-        container_name: mongo_container
+            - mongodb
+    mongodb:
+        container_name: mongo-container
         image: mongo:latest
         restart: always
         ports:
           - '27017:27017'
         volumes:
-          - mongo_dbv:/data/db
+          - ./data:/data/db
 volumes:
     mongo_dbv:
