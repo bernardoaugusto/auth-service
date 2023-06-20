@@ -1,5 +1,3 @@
-
-# STAGE 1
 FROM node:18.16-alpine as builder
 WORKDIR /usr/src/auth-service
 COPY ./package*.json ./
