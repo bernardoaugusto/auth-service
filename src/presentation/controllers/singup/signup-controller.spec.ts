@@ -1,13 +1,15 @@
 import { MissingParamError, ServerError } from "../../errors";
 import { SignUpController } from "./signup-controller";
+import { ok, serverError, badRequest } from "../../helpers/http/http-helper";
 import {
     AccountModel,
     AddAccount,
     AddAccountModel,
+    Authentication,
+    AuthenticationModel,
     HttpRequest,
     Validation,
 } from "./singup-controller-protocols";
-import { ok, serverError, badRequest } from "../../helpers/http/http-helper";
 
 const makeFakeRequest = (): HttpRequest => ({
     body: {
@@ -45,19 +47,35 @@ const makeValidation = (): Validation => {
     return new ValidationStub();
 };
 
+const makeAuthentication = (): Authentication => {
+    class AuthenticationStub implements Authentication {
+        auth(authentication: AuthenticationModel): Promise<string> {
+            return new Promise((resolve) => resolve("any_token"));
+        }
+    }
+
+    return new AuthenticationStub();
+};
+
 interface SutTypes {
     sut: SignUpController;
     addAccountStub: AddAccount;
     validationStub: Validation;
+    authenticationStub: Authentication;
 }
 
 const makeSut = (): SutTypes => {
     const addAccountStub = makeAddAccount();
     const validationStub = makeValidation();
+    const authenticationStub = makeAuthentication();
 
-    const sut = new SignUpController(addAccountStub, validationStub);
+    const sut = new SignUpController(
+        addAccountStub,
+        validationStub,
+        authenticationStub
+    );
 
-    return { sut, addAccountStub, validationStub };
+    return { sut, addAccountStub, validationStub, authenticationStub };
 };
 
 describe("SingUP Controller", () => {
@@ -111,5 +129,16 @@ describe("SingUP Controller", () => {
         expect(httpResponse).toEqual(
             badRequest(new MissingParamError("any_field"))
         );
+    });
+
+    it("Should call Authentication with correct values", async () => {
+        const { sut, authenticationStub } = makeSut();
+        const authSpy = jest.spyOn(authenticationStub, "auth");
+
+        await sut.handle(makeFakeRequest());
+        expect(authSpy).toHaveBeenCalledWith({
+            email: "any_email@mail.com",
+            password: "any_password",
+        });
     });
 });
