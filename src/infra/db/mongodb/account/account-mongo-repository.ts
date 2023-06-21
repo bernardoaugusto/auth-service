@@ -22,7 +22,7 @@ export class AccountMongoRepository
         return MongoHelper.map(account);
     }
 
-    async loadByEmail(email: string): Promise<AccountModel> {
+    async loadByEmail(email: string): Promise<AccountModel | null> {
         const accountCollection = await MongoHelper.getCollection("accounts");
         const account = await accountCollection.findOne({ email });
 
