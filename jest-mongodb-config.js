@@ -9,4 +9,5 @@ module.exports = {
         },
         autoStart: false,
     },
+    mongoURLEnvName: "MONGODB_JEST_URI",
 };
